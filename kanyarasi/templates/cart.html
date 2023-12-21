@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Cart</title>
+    <style>
+        .cart-item {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cart-item-details {
+            flex-grow: 1;
+        }
+        .cart-item-image {
+        width: 100px; /* Example width, adjust as needed */
+        height: auto; /* Maintain aspect ratio */
+        margin-right: 10px; /* Space between image and details */
+        }
+    </style>
+</head>
+<body>
+    <h1>Your Cart</h1>
+    <ul id="cart-items">
+        {% for item in cart_items %}
+        <li class="cart-item">
+            <img src="{{ item.image_url }}" alt="{{ item.name }}" class="cart-item-image">
+            <div class="cart-item-details">
+                {{ item.name }} - ${{ item.price }}
+            </div>
+            <button onclick="removeFromCart('{{ forloop.counter0 }}')">Remove</button>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <p id="cart-total">Total: ${{ total_amount }}</p>
+
+    <form action="{% url 'submit_order' %}" method="post">
+        {% csrf_token %}
+        <input type="text" name="address_line_1" placeholder="Address Line 1" required>
+        <input type="text" name="address_line_2" placeholder="Address Line 2">
+        <input type="text" name="phone_number" placeholder="Phone Number" required>
+        <input type="text" name="pincode" placeholder="Pin Code" required>
+        <input type="submit" value="submit order">
+    </form>
+        <button onclick="window.location.href='{% url 'user_dash' %}'">Back to Dashboard</button>
+
+    <script>
+        function removeFromCart(itemIndex) {
+            fetch(`remove_from_cart/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ itemIndex: itemIndex })  // Corrected to use itemIndex
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    location.reload();
+                } else {
+                    alert('Error removing item: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

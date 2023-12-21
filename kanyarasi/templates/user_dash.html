@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+    <style>
+        .menu-item { margin-bottom: 10px; }
+        .menu-image { width: 100px; height: auto; }
+        .masters-list { margin-bottom: 20px; }
+        .menu-button, .add-to-cart-button, .remove-from-cart-button { cursor: pointer; }
+        #cart-symbol { position: fixed; top: 10px; right: 10px; cursor: pointer; width: 30px; height: 30px; }
+        #notification { display: none; position: fixed; top: 20px; right: 20px; background-color: #90ee90; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>User Dashboard</h1>
+    <button onclick="window.location.href='{% url 'order_status' %}'">Order Status</button>
+    <img id="cart-symbol" src="{% static 'images/path_to_cart_icon.png' %}" alt="Cart" onclick="openCart()" />
+
+    <div id="notification"></div>
+
+    <div class="masters-list">
+        <h2>Restaurants</h2>
+        <ul>
+            {% for master in masters %}
+            <li>
+                <button class="menu-button" aria-expanded="false" onclick="toggleMenuItems('{{ master.user.username }}')">Restaurants: {{ master.user.username }}</button>
+                <div id="{{ master.user.username }}" class="menu-items" style="display:none;">
+                    {% for item in master.menuitem_set.all %}
+                    <div class="menu-item">
+                        <img src="{{ item.image_url }}" alt="{{ item.name }}" class="menu-image">
+                        <p>Name: {{ item.name }}</p>
+                        <p>Price: ${{ item.price }}</p>
+                        <p>Description: {{ item.description }}</p>
+                        <button class="add-to-cart-button" onclick="addToCart('{{ item.name }}', '{{ item.price }}', '{{ item.id }}')">Add to Cart</button>
+                    </div>
+                    {% empty %}
+                    <p>No menu items found for this master.</p>
+                    {% endfor %}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
+        function toggleMenuItems(masterUsername) {
+            var button = document.querySelector(`button[onclick="toggleMenuItems('${masterUsername}')"]`);
+            var itemsDiv = document.getElementById(masterUsername);
+            var isExpanded = button.getAttribute('aria-expanded') === 'true';
+            itemsDiv.style.display = isExpanded ? 'none' : 'block';
+            button.setAttribute('aria-expanded', !isExpanded);
+        }
+
+        function addToCart(itemName, itemPrice, itemId) {
+            fetch(`add_to_cart/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({ itemId: itemId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+                alert("Item added to cart: " + itemName); // Display an alert or notification
+                // Rest of your logic to update the cart...
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function openCart() {
+            window.location.href = 'cart/'; // Redirect to the cart page
+        }
+    </script>
+</body>
+</html>

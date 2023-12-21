@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Master Dashboard</title>
+    <style>
+        .button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Master Dashboard</h2>
+
+    <button class="button" id="addMenuButton">Add Menu</button>
+    <button class="button" id="viewOrdersButton">View Orders</button>
+    <button class="button" id="viewMenuButton">View Menu</button>
+
+
+    <script>
+        document.getElementById('addMenuButton').addEventListener('click', function() { window.location.href = '{% url "add_item" %}'; });
+        document.getElementById('viewOrdersButton').addEventListener('click', function() { window.location.href = '{% url "view_order" %}';});
+        document.getElementById('viewMenuButton').addEventListener('click', function() { window.location.href = '{% url "view_menu" %}'; });
+    </script>
+
+</body>
+</html>

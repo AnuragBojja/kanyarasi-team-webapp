@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select option</title>
+    <style>
+        .button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Select option</h2>
+
+    <!-- User Button -->
+    <button class="button" id="userButton">User</button>
+
+    <!-- Master Button -->
+    <button class="button" id="masterButton">Master</button>
+
+    <!-- Captain Button -->
+    <button class="button" id="captainButton">Captain</button>
+
+    <script>
+        document.getElementById('userButton').addEventListener('click', function() {
+        window.location.href = '{% url "user_login" %}';
+        });
+
+        document.getElementById('masterButton').addEventListener('click', function() {
+            window.location.href = '{% url "master_login" %}';
+        });
+
+        document.getElementById('captainButton').addEventListener('click', function() {
+            window.location.href = '{% url "captain_login" %}';
+        });
+    </script>
+
+</body>
+</html>

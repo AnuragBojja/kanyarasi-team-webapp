@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Deliver Order</title>
+</head>
+<body>
+    <h1>Deliver Order #{{ order.id }}</h1>
+    <!-- Display order details here -->
+    <p>Address: {{ order.address_line_1 }} {{ order.address_line_2 }}</p>
+    <p>Phone: {{ order.phone_number }}</p>
+    <p>Pin Code: {{ order.pincode }}</p>
+    <!-- List items in the order -->
+    <ul>
+        {% for item in order.items.all %}
+            <li>{{ item.name }} - ${{ item.price }}</li>
+        {% endfor %}
+    </ul>
+
+    <form action="/mark_order_delivered/{{ order.id }}/" method="post">
+        {% csrf_token %}
+        <button type="submit">Delivery Successful</button>
+    </form>
+    
+</body>
+</html>

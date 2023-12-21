@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Menu Items</title>
+    <style>
+        .menu-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .menu-table, .menu-table th, .menu-table td {
+            border: 1px solid black;
+        }
+        .menu-table th, .menu-table td {
+            padding: 10px;
+            text-align: left;
+        }
+        .menu-image {
+            width: 100px; /* Adjust as needed */
+            height: auto;
+        }
+        .back-button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            margin-top: 20px;
+            display: inline-block;
+        }
+        .back-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h2>Menu Items</h2>
+    <table class="menu-table">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Price ($)</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in menu_items %}
+            <tr>
+                <td>
+                    <img src="{{ item.image_url }}" alt="{{ item.name }}" class="menu-image">
+                </td>
+                <td>{{ item.name }}</td>
+                <td>${{ item.price }}</td>
+                <td>{{ item.description }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No menu items found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'master_dash' %}" class="back-button">Back to Home</a>
+</body>
+</html>

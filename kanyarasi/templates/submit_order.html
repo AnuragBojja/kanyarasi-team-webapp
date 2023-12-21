@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Confirmation</title>
+    <style>
+        .order-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .order-item img {
+            width: auto; /* Adjust as needed */
+            margin-right: 200px;
+        }
+        .order-summary {
+            margin-top: 20px;
+        }
+        .address {
+            margin-top: 20px;
+        }
+        .tracking-number {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Order Placed</h1>
+
+    <h2>Order Details</h2>
+    <div class="order-summary">
+        {% for item in cart_items %}
+        <div class="order-item">
+            {% if item.image_url %}
+            <img src="{{ item.image_url }}" alt="{{ item.name }}" style="width: auto; margin-right: 200px;" />
+            {% endif %}
+            <p>{{ item.name }} - ${{ item.price }}</p>
+        </div>
+        {% endfor %}
+        <p>Total: ${{ total_amount }}</p>
+    </div>
+
+    <div class="address">
+        <h2>Delivery Address</h2>
+        <p>{{ address_line_1 }}</p>
+        {% if address_line_2 %}
+        <p>{{ address_line_2 }}</p>
+        {% endif %}
+        <p>Phone: {{ phone_number }}</p>
+        <p>Pin Code: {{ pincode }}</p>
+    </div>
+
+    <div class="tracking-number">
+        <h2>Tracking Number: {{ tracking_number }}</h2>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Orders</title>
+    <script>
+        // JavaScript function to toggle order details
+        function toggleOrderDetails(orderId) {
+            var detailsDiv = document.getElementById('order-details-' + orderId);
+            detailsDiv.style.display = detailsDiv.style.display === 'none' ? 'block' : 'none';
+        }
+        function cancelOrder(orderId) {
+            if (!confirm('Are you sure you want to cancel this order?')) return;
+            
+            fetch(`/kanyarasi/cancel_order/?order_id=${orderId}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.getElementById(`order-${orderId}`).remove();
+                    alert('Order cancelled successfully.');
+                } else {
+                    alert('Error cancelling order.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        function confirmCompleteOrder(orderId) {
+            if (confirm('Are you sure you want to mark order #' + orderId + ' as complete?')) {
+                completeOrder(orderId);
+            }
+        }
+
+        function completeOrder(orderId) {
+            fetch(`/complete_order/${orderId}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if(data.status === 'success') {
+                    document.getElementById(`order-${orderId}`).remove();
+                    alert('Order #' + orderId + ' has been marked as complete.');
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                alert('An error occurred while updating the order.');
+            });
+        }
+
+    </script>
+</head>
+<body>
+    <h1>Orders</h1>
+    {% for order in orders %}
+        <div class="order">
+            <button onclick="toggleOrderDetails('{{ order.id }}')">Order #{{ order.id }}</button>
+            <div id="order-details-{{ order.id }}" style="display: none;">
+                <p>Order Date: {{ order.order_date }}</p>
+                
+                
+                <ul>
+                    {% for item in order.items.all %}
+                        <li>{{ item.name }} - ${{ item.price }}</li>
+                    {% endfor %}
+                </ul>
+                <button onclick="cancelOrder('{{ order.id }}')">Cancel</button>
+                <a href="{% url 'complete_order_page' order.id %}">Complete Order</a>
+            </div>
+        </div>
+    {% endfor %}
+</body>
+</html>

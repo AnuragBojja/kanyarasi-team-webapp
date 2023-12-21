@@ -1,0 +1,21 @@
+<!-- complete_order.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Complete Order</title>
+</head>
+<body>
+    <h1>Complete Order #{{ order.id }}</h1>
+    <p>Order Date: {{ order.order_date }}</p>
+    
+    <ul>
+        {% for item in order.items.all %}
+            <li>{{ item.name }} - ${{ item.price }}</li>
+        {% endfor %}
+    </ul>
+    <form action="{% url 'confirm_complete_order' order.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Confirm</button>
+    </form>
+</body>
+</html>

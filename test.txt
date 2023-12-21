@@ -1,0 +1,6 @@
+SECRET_KEY=django-insecure-$%)x!c0vo)umd^%i9vf+829i1ha2p=bed6h(npedv-ta9=f3(7
+DB_NAME=cs790app
+DB_USER=kanyarasi
+DB_PASSWORD=Anurag23
+DB_HOST=kanyarasi.mysql.database.azure.com
+DB_PORT=3306

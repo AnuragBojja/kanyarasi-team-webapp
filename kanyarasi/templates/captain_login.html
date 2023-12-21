@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Login</title>
+</head>
+<body>
+    <form method="post" action="{% url 'captain_login' %}">
+        {% csrf_token %}
+        <label for="username">username:</label>
+        <input type="username" id="username" name="username">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password">
+        <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="{% url 'captain_register' %}">Create one here</a>.</p>
+</body>
+</html>

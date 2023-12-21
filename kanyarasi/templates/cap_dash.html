@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Captain Dashboard</title>
+    <style>
+        .order-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .details {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Captain Dashboard</h1>
+
+    <!-- Example of order cards -->
+    <div id="orders-container">
+        {% for order in orders %}
+        <div class="order-card" id="order-{{ order.id }}">
+            <h3>Order #{{ order.id }}</h3>
+            <div class="details">
+                <p>Address: {{ order.address_line_1 }} {{ order.address_line_2 }}</p>
+                <p>Phone: {{ order.phone_number }}</p>
+                <p>Pin Code: {{ order.pincode }}</p>
+                <ul>
+                    {% for item in order.items.all %}
+                    <li>{{ item.name }} - ${{ item.price }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <a href="{% url 'deliver_order' order.id %}">deliver Order</a>
+        </div>
+        {% empty %}
+        <p>No orders to deliver.</p>
+        {% endfor %}
+    </div>
+
+    <script>
+        function deliverOrder(orderId) {
+            window.location.href = `/deliver_order/${orderId}`; // Redirect to the deliver_order page
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>
